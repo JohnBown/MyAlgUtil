@@ -1,6 +1,5 @@
 package yuanalg;
 
-import java.util.Comparator;
 import java.util.Random;
 
 public class Vector<T extends Comparable<T>> {
@@ -119,30 +118,29 @@ public class Vector<T extends Comparable<T>> {
      * @param hi
      * @return
      */
-    public int search(T e, int lo, int hi, Comparator<? super T> c){
+    public int search(T e, int lo, int hi){
         Random rand = new Random();
         return (rand.nextBoolean())//各按50%概率随机选用
-                ? binSearch((T[])elem,e,lo,hi, c) //二分查找算法，或者
-                : fibSearch((T[])elem,e,lo,hi, c);//Fibonacci查找算法
+                ? binSearch((T[])elem,e,lo,hi) //二分查找算法，或者
+                : fibSearch((T[])elem,e,lo,hi);//Fibonacci查找算法
     }
 
-    public int binSearch(T[] S, T e, int lo, int hi, Comparator<? super T> c){
+    public int binSearch(T[] S, T e, int lo, int hi){
         while (lo<hi){//不变性：A[0,li) <= e < A[hi,n)
             int mi = (lo+hi) >> 1;//以中点为轴点，经比较后确定深入
-            
-            if (c.compare(e,S[mi])<0) hi = mi;//[lo,mi)或[mi,hi)
+            if (e.compareTo(S[mi])<0) hi = mi;//[lo,mi)或[mi,hi)
             else lo = mi+1;
         }//出口时hi=lo+1，查找区间仅含一个元素A[lo]
         return --lo;//返回命中元素的秩或-1
     }
 
-    public int fibSearch(T[] S, T e, int lo, int hi, Comparator<? super T> c){
+    public int fibSearch(T[] S, T e, int lo, int hi){
         Fib fib = new  Fib(hi - lo);//用O(log_phi(n = hi - lo)时间创建Fib数列
         while (lo<hi){//每步迭代可能要做两次比较判断，有三个分支
             while (hi - lo<fib.get()) fib.prev();//通过向前顺序查找（分摊O(1)）——至多迭代几次？
             int mi = lo + fib.get() - 1;//确定形如Fib(k) - 1的轴点
-            if (c.compare(e,S[mi])<0) hi = mi;//深入前半段[lo, mi)继续查找
-            else if (c.compare(S[mi],e)<0) lo = mi +1;//深入后半段(mi, hi)继续查找
+            if (e.compareTo(S[mi])<0) hi = mi;//深入前半段[lo, mi)继续查找
+            else if (S[mi].compareTo(e)<0) lo = mi +1;//深入后半段(mi, hi)继续查找
             else  return mi;//在mi处命中
         }//成功查找可以提前终止
         return -1;//查找失败
@@ -194,7 +192,7 @@ public class Vector<T extends Comparable<T>> {
      * @return
      */
     public int insert(T e){
-        insert(size,e);
+        return insert(size,e);
     }
 
     /**
@@ -306,7 +304,7 @@ public class Vector<T extends Comparable<T>> {
      * @return
      */
     boolean bubbleSort(int lo, int hi){
-
+        return false;
     }
 
     /**
@@ -316,7 +314,15 @@ public class Vector<T extends Comparable<T>> {
      * @return
      */
     int max(int lo, int hi){
-
+        Object max = elem[lo];
+        int maxrank;
+        for (maxrank = lo;lo<=hi;lo++){
+            if (((T)max).compareTo((T)elem[lo])<0) {
+                max = elem[lo];
+                maxrank = lo;
+            }
+        }
+        return maxrank;
     }
 
     /**
@@ -354,7 +360,7 @@ public class Vector<T extends Comparable<T>> {
      * @return
      */
     int partition(int lo, int hi){
-
+        return -1;
     }
 
     /**
