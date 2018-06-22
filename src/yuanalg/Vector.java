@@ -2,7 +2,7 @@ package yuanalg;
 
 import java.util.Random;
 
-public class Vector<T extends Comparable<T>> {
+public class Vector<E extends Comparable<E>> {
 
     final int DEFAULT_CAPACITY = 3;//默认初始容量（实际应用中可设为更大）
 
@@ -17,20 +17,20 @@ public class Vector<T extends Comparable<T>> {
         for (size = 0; size<capacity;elem[size++] = 0);
     }
 
-    public Vector(T[] A, int n){
+    public Vector(E[] A, int n){
         copyFrom(A,0,n);
     }
 
-    public Vector(T[] A, int lo, int hi){
+    public Vector(E[] A, int lo, int hi){
         copyFrom(A,lo,hi);
     }
 
     public Vector(Vector V){
-        copyFrom((T[])V.elem,0,V.size);
+        copyFrom((E[])V.elem,0,V.size);
     }
 
     public Vector(Vector V, int lo, int hi){
-        copyFrom((T[])V.elem,lo,hi);
+        copyFrom((E[])V.elem,lo,hi);
     }
 
     /**
@@ -45,8 +45,8 @@ public class Vector<T extends Comparable<T>> {
      * 获取秩为r的元素
      * @return
      */
-    public T get(int r){
-        return (T)elem[r];
+    public E get(int r){
+        return (E)elem[r];
     }
 
     /**
@@ -55,7 +55,7 @@ public class Vector<T extends Comparable<T>> {
      * @param e
      * @return
      */
-    public boolean put(int r, T e){
+    public boolean put(int r, E e){
         if (size<r) return false;
         elem[r] = e;
         return true;
@@ -76,7 +76,7 @@ public class Vector<T extends Comparable<T>> {
     public int disordered(){//统计向量中的逆序相邻元素对
         int n = 0;//计数器
         for (int i = 1; i < size; i++) {//逐一检查各对相邻元素
-            if(((T)elem[i-1]).compareTo((T)elem[i])>0) n++;//逆序则计数
+            if(((E)elem[i-1]).compareTo((E)elem[i])>0) n++;//逆序则计数
         }
         return n;//向量有序当且仅当n=0
     }//若只需判断是否有序，则首次遇到逆序对之后，即可立即终止
@@ -86,7 +86,7 @@ public class Vector<T extends Comparable<T>> {
      * @param e
      * @return
      */
-    public int find(T e){
+    public int find(E e){
         return find(e, 0, size);
     }
 
@@ -97,7 +97,7 @@ public class Vector<T extends Comparable<T>> {
      * @param hi
      * @return
      */
-    public int find(T e, int lo, int hi){//0<=lo<hi<=size
+    public int find(E e, int lo, int hi){//0<=lo<hi<=size
         while ((lo<hi--) && (e!=elem[hi]));//逆向查找
         return hi;//hi<lo 意味着失败，否则hi即命中元素的秩
     }
@@ -107,7 +107,7 @@ public class Vector<T extends Comparable<T>> {
      * @param e
      * @return
      */
-    public int search(T e){
+    public int search(E e){
         return (0>= size)? -1: search(e,0,size);
     }
 
@@ -118,14 +118,14 @@ public class Vector<T extends Comparable<T>> {
      * @param hi
      * @return
      */
-    public int search(T e, int lo, int hi){
+    public int search(E e, int lo, int hi){
         Random rand = new Random();
         return (rand.nextBoolean())//各按50%概率随机选用
-                ? binSearch((T[])elem,e,lo,hi) //二分查找算法，或者
-                : fibSearch((T[])elem,e,lo,hi);//Fibonacci查找算法
+                ? binSearch((E[])elem,e,lo,hi) //二分查找算法，或者
+                : fibSearch((E[])elem,e,lo,hi);//Fibonacci查找算法
     }
 
-    public int binSearch(T[] S, T e, int lo, int hi){
+    public int binSearch(E[] S, E e, int lo, int hi){
         while (lo<hi){//不变性：A[0,li) <= e < A[hi,n)
             int mi = (lo+hi) >> 1;//以中点为轴点，经比较后确定深入
             if (e.compareTo(S[mi])<0) hi = mi;//[lo,mi)或[mi,hi)
@@ -134,7 +134,7 @@ public class Vector<T extends Comparable<T>> {
         return --lo;//返回命中元素的秩或-1
     }
 
-    public int fibSearch(T[] S, T e, int lo, int hi){
+    public int fibSearch(E[] S, E e, int lo, int hi){
         Fib fib = new  Fib(hi - lo);//用O(log_phi(n = hi - lo)时间创建Fib数列
         while (lo<hi){//每步迭代可能要做两次比较判断，有三个分支
             while (hi - lo<fib.get()) fib.prev();//通过向前顺序查找（分摊O(1)）——至多迭代几次？
@@ -151,10 +151,10 @@ public class Vector<T extends Comparable<T>> {
      * @param r
      * @return
      */
-    public T remove(int r){
+    public E remove(int r){
         Object e = elem[r];//备份被删除元素
         remove(r,r+1);//调用区间删除算法
-        return (T)e;//返回被删除元素
+        return (E)e;//返回被删除元素
     }
 
     /**
@@ -177,7 +177,7 @@ public class Vector<T extends Comparable<T>> {
      * @param e
      * @return
      */
-    public int insert(int r, T e){//将e作为秩为r元素插入
+    public int insert(int r, E e){//将e作为秩为r元素插入
         //assert: 0 <= r <= size
         expand();//若有必要，扩容
         for (int i = size; i >r ; i--) //自后向前
@@ -191,7 +191,7 @@ public class Vector<T extends Comparable<T>> {
      * @param e
      * @return
      */
-    public int insert(T e){
+    public int insert(E e){
         return insert(size,e);
     }
 
@@ -235,7 +235,7 @@ public class Vector<T extends Comparable<T>> {
         int oldSize = size;//记录原规模
         int i = 1;//从elem[1]开始
         while (i<size){//自前向后逐一考查各元素elem[i]
-            if ((find((T) elem[i], 0, i) < 0)) i++;//在其前缀中寻找与之雷同者（至多一个）
+            if ((find((E) elem[i], 0, i) < 0)) i++;//在其前缀中寻找与之雷同者（至多一个）
             else remove(i);//若无雷同则继续考查其后继，否则删除雷同者
         }
         return oldSize - size;//向量规模变化量，即被删除元素总数
@@ -260,7 +260,7 @@ public class Vector<T extends Comparable<T>> {
      * @param lo
      * @param hi
      */
-    void copyFrom (T[] A, int lo, int hi){
+    void copyFrom (E[] A, int lo, int hi){
         elem = new Object[capacity = 2*(hi - lo)];//分配空间
         size = 0;//规模清零
         while (lo<hi)//A[lo,hi)内元素逐一
@@ -317,7 +317,7 @@ public class Vector<T extends Comparable<T>> {
         Object max = elem[lo];
         int maxrank;
         for (maxrank = lo;lo<=hi;lo++){
-            if (((T)max).compareTo((T)elem[lo])<0) {
+            if (((E)max).compareTo((E)elem[lo])<0) {
                 max = elem[lo];
                 maxrank = lo;
             }
