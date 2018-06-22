@@ -6,11 +6,11 @@ public class Vector<E extends Comparable<E>> {
 
     final int DEFAULT_CAPACITY = 3;//默认初始容量（实际应用中可设为更大）
 
-    static Object[] elem;//数据区
+    Object[] elem;//数据区
 
-    static int size;//规模
+    int size;//规模
 
-    static int capacity;//容量
+    int capacity;//容量
 
     public Vector(){
         elem = new Object[capacity = DEFAULT_CAPACITY];
