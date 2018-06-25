@@ -136,7 +136,13 @@ public class List<E extends Comparable<E>> {
     }
 
     public ListNode selectMax(ListNode p, int n){//在p及其n-1个后继中选出最大者
-        return null;
+        ListNode max = p;//最大者暂定为p
+        for (ListNode cur = p;1<n;n--){//后续节点逐一与max比较
+            if (((E)(cur=cur.succ).data).compareTo((E)p.data)>=0){//若>=max
+                max = cur;//则更新最大元素的位置记录
+            }
+        }
+        return max;//返回最大节点位置
     }
 
     /**
