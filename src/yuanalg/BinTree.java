@@ -1,5 +1,8 @@
 package yuanalg;
 
+import java.util.Queue;
+import java.util.Stack;
+
 public class BinTree<E extends Comparable<E>> {
 
     protected class BinNode<E>{
@@ -32,7 +35,7 @@ public class BinTree<E extends Comparable<E>> {
         }
 
         BinNode succ(){//（中序遍历意义下）当前节点的直接后继
-
+            return null;
         }
 
         void travLevel(){//子树层次遍历
@@ -130,9 +133,67 @@ public class BinTree<E extends Comparable<E>> {
 //            if (x.rc!=null) S.push(x.rc);//右孩子先入后出
 //            else if (x.lc!=null) S.push(x.lc);//左孩子后入先出
 //        }
-
-
     }
 
+    void visit(E e) {
+        System.out.print(e+"");
+    }
+
+    void visitAlongVine(BinNode x, Stack<BinNode> S){
+        while (x!=null){//反复地
+            visit((E)x.data);//访问当前节点
+            S.push(x.rc);//右孩子（右子树）入栈（将来逆序出栈）
+            x = x.lc;//沿左侧链下行
+        }//只有右孩子，NULL可能入栈
+    }
+
+    /**
+     * 先序遍历
+     * @param x
+     */
+    void travPre(BinNode x){
+        Stack<BinNode> S = null;//辅助栈
+        while (true){//以（右）子树为单位，逐批访问节点
+            visitAlongVine(x,S);//访问子树x的左侧链，右子树入栈缓冲
+            if (S.empty()) break;//栈空即退出
+            x = S.pop();//弹出下一子树的根
+        }
+    }
+
+    void goAlongVine(BinNode x, Stack<BinNode> S){
+        while (x!=null){
+            S.push(x);
+            x = x.lc;
+        }
+    }//反复地入栈，沿左分支深入
+
+    /**
+     * 中序遍历
+     * @param x
+     */
+    void travIn(BinNode x){
+        Stack<BinNode> S = null;//辅助栈
+        while (true){//反复地
+            goAlongVine(x,S);//从当前节点出发，逐批入栈
+            if (S.empty()) break;//直至所有节点处理完毕
+            x = S.pop();//x的左子树或为空，或已遍历（等效于空），故可以
+            visit((E)x.data);//立即访问之
+            x = x.rc;//再转向其右子树（可能为空，留意处理手法）
+        }
+    }
+
+    /**
+     * 层次遍历
+     */
+    void travLevel(){//二叉树层次遍历
+        Queue<BinNode> Q = null;//引入辅助队列
+        Q.add(this.root);//根节点入队
+        while (!Q.isEmpty()){//在队列再次变空之前，反复迭代
+            BinNode x = Q.poll();//取出队首节点，并随即
+            visit((E)x.data);//访问之
+            if (x.lc!=null) Q.add(x.lc);//左孩子入队
+            if (x.rc!=null) Q.add(x.rc);//右孩子入队
+        }
+    }
 
 }
