@@ -55,8 +55,8 @@ public class BinTree<E extends Comparable<E>> {
         }
     }
 
-    private int size;//规模
-    private BinNode root;//根节点
+    int size;//规模
+    BinNode root;//根节点
 
     private int stature(BinNode p){//节点高度，约定空树高度为-1
         return p!=null?p.height:-1;
