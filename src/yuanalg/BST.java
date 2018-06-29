@@ -71,7 +71,7 @@ public abstract class BST<E extends Comparable<E>> extends BinTree<E>{
         if (succ!=null) succ.parent = hot;//并将被删除节点的接替者与hot相联
         return succ;//释放被摘除节点，返回接替者
     }
-    
+
     BinNode hot;//命中节点的父亲
 
     abstract BinNode connect34(//3+4重构
