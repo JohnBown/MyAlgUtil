@@ -74,10 +74,53 @@ public abstract class BST<E extends Comparable<E>> extends BinTree<E>{
 
     BinNode hot;//命中节点的父亲
 
-    abstract BinNode connect34(//3+4重构
-            BinNode n1, BinNode n2, BinNode n3,
-            BinNode n4, BinNode n5, BinNode n6, BinNode n7
-    );
+    /**
+     *
+     * @param a
+     * @param b
+     * @param c
+     * @param T0
+     * @param T1
+     * @param T2
+     * @param T3
+     * @return
+     */
+    BinNode connect34(//3+4重构
+            BinNode a, BinNode b, BinNode c,
+            BinNode T0, BinNode T1, BinNode T2, BinNode T3
+    ){
+        a.lc = T0; if (T0==null) T0.parent = a;
+        a.rc = T1; if (T1==null) T1.parent = a; updateHeight(a);
+        c.lc = T2; if (T2==null) T2.parent = c;
+        c.rc = T3; if (T3==null) T3.parent = c; updateHeight(c);
+        b.lc = a; a.parent = b;
+        b.rc = c; c.parent = b; updateHeight(b);
+        return b;//该子树新的根节点
+    }
 
-    abstract BinNode rotateAt(BinNode n);//旋转调整
+    /**
+     *
+     * @param v
+     * @return
+     */
+    BinNode rotateAt(BinNode v) {//旋转调整
+        BinNode p = v.parent, g = p.parent;
+        if (p.lc==null){//zig
+            if (v.lc==null){//zig-zig
+                p.parent = g.parent;//向上联接
+                return connect34(v,p,g,v.lc,v.rc,p.rc,g.rc);
+            }else {//zig-zag
+                v.parent = g.parent;//向上联接
+                return connect34(p,v,g,p.lc,v.lc,v.rc,g.rc);
+            }
+        }else {//zag
+            if (v.rc==null){//zag-zag
+                p.parent = g.parent;//向上联接
+                return connect34(g,p,v,g.lc,p.lc,v.lc,v.rc);
+            }else {//zag-zig
+                v.parent = g.parent;//向上联接
+                return connect34(g,v,p,g.lc,v.lc,v.rc,p.rc);
+            }
+        }
+    }
 }
